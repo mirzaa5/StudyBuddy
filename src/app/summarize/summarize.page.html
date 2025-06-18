@@ -1,0 +1,67 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <div class="header-content">
+      <div class="logo-container">
+        <ion-icon name="document-text" class="logo-icon"></ion-icon>
+        <ion-title class="app-title">Summarize</ion-title>
+      </div>
+      <div class="header-actions">
+        <ion-button fill="clear" class="action-button">
+          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="summarize-container">
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="section-header">
+        <ion-icon name="create-outline" class="section-icon"></ion-icon>
+        <h2>Your Notes</h2>
+      </div>
+      <div class="text-area-container">
+        <ion-textarea
+          placeholder="Type or paste your text here to summarize..."
+          [rows]="8"
+          [autoGrow]="true"
+          class="notes-input"
+          [(ngModel)]="inputText"
+          (ionChange)="onTextChange($event)"
+          [disabled]="isLoading"
+        ></ion-textarea>
+        <div class="character-count">
+          <span>{{characterCount}} characters</span>
+        </div>
+      </div>
+      <ion-button expand="block" class="summarize-button" (click)="summarize()" [disabled]="isLoading">
+        <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+        <ion-icon name="sparkles-outline" slot="start" *ngIf="!isLoading"></ion-icon>
+        {{isLoading ? 'Summarizing...' : 'Summarize'}}
+      </ion-button>
+    </div>
+
+    <!-- Result Section -->
+    <div class="result-section">
+      <div class="section-header">
+        <ion-icon name="document-text-outline" class="section-icon"></ion-icon>
+        <h2>Summary</h2>
+      </div>
+      <div class="result-container">
+        <div class="placeholder-text" *ngIf="!summary && !isLoading">
+          <ion-icon name="document-text-outline" class="placeholder-icon"></ion-icon>
+          <p>Your summary will appear here</p>
+        </div>
+        <div class="loading-container" *ngIf="isLoading">
+          <ion-spinner name="dots"></ion-spinner>
+          <p>Generating summary...</p>
+        </div>
+        <div class="summary-content" *ngIf="summary && !isLoading">
+          {{summary}}
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content> 

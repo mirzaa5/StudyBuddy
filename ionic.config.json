@@ -1,0 +1,7 @@
+{
+  "name": "PromptPilot",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

@@ -1,0 +1,85 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <div class="header-content">
+      <div class="logo-container">
+        <ion-icon name="help-circle" class="logo-icon"></ion-icon>
+        <ion-title class="app-title">Quiz</ion-title>
+      </div>
+      <div class="header-actions">
+        <ion-button fill="clear" class="action-button">
+          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <div class="quiz-container">
+    <!-- Input Section -->
+    <div class="input-section">
+      <div class="section-header">
+        <ion-icon name="create-outline" class="section-icon"></ion-icon>
+        <h2>Topic or Text</h2>
+      </div>
+      <div class="text-area-container">
+        <ion-textarea
+          placeholder="Enter a topic or paste text to generate a quiz..."
+          [rows]="6"
+          [autoGrow]="true"
+          class="topic-input"
+          [(ngModel)]="inputText"
+          (ionChange)="onTextChange($event)"
+          [disabled]="isLoading"
+        ></ion-textarea>
+        <div class="character-count">
+          <span>{{characterCount}} characters</span>
+        </div>
+      </div>
+      <ion-button expand="block" class="generate-button" (click)="generateQuiz()" [disabled]="isLoading">
+        <ion-spinner name="dots" *ngIf="isLoading"></ion-spinner>
+        <ion-icon name="sparkles-outline" slot="start" *ngIf="!isLoading"></ion-icon>
+        {{isLoading ? 'Generating Quiz...' : 'Generate Quiz'}}
+      </ion-button>
+    </div>
+
+    <!-- Quiz Section -->
+    <div class="quiz-section">
+      <div class="section-header">
+        <ion-icon name="help-circle-outline" class="section-icon"></ion-icon>
+        <h2>Generated Questions</h2>
+      </div>
+      <div class="quiz-container">
+        <div class="placeholder-text" *ngIf="!hasQuestions && !isLoading">
+          <ion-icon name="help-circle-outline" class="placeholder-icon"></ion-icon>
+          <p>Your quiz questions will appear here</p>
+        </div>
+        
+        <div class="loading-container" *ngIf="isLoading">
+          <ion-spinner name="dots"></ion-spinner>
+          <p>Generating quiz questions...</p>
+        </div>
+        
+        <div class="questions-container" *ngIf="hasQuestions && !isLoading">
+          <div class="question-card" *ngFor="let question of questions">
+            <div class="question-header">
+              <span class="question-number">Question {{question.id}}</span>
+              <span class="question-type">Multiple Choice</span>
+            </div>
+            <p class="question-text">{{question.question}}</p>
+            <div class="options-container">
+              <ion-item class="option-item" *ngFor="let option of question.options; let i = index">
+                <ion-radio 
+                  [value]="i" 
+                  (ionSelect)="onAnswerSelect(question.id, i)"
+                  [checked]="selectedAnswers[question.id] === i"
+                ></ion-radio>
+                <ion-label>{{option}}</ion-label>
+              </ion-item>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content> 

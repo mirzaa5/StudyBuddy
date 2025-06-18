@@ -1,0 +1,77 @@
+<ion-header class="custom-header">
+  <ion-toolbar>
+    <div class="header-content">
+      <div class="logo-container">
+        <ion-icon name="chatbubble-ellipses" class="logo-icon"></ion-icon>
+        <ion-title class="app-title">StudyBuddy</ion-title>
+      </div>
+      <div class="header-actions">
+        <ion-button fill="clear" class="action-button">
+          <ion-icon name="settings-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear" class="action-button">
+          <ion-icon name="person-circle-outline" slot="icon-only"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" class="ion-padding">
+  <!-- Chat Messages Area -->
+  <div class="chat-container">
+    <div class="messages">
+      <!-- Welcome Message -->
+      <div class="message system">
+        <div class="message-content">
+          <div class="message-header">
+            <ion-icon name="sparkles-outline" class="message-icon"></ion-icon>
+            <span>Welcome to StudyBuddy</span>
+          </div>
+          <p>I'm your study buddy! What's on your mind?</p>
+        </div>
+      </div>
+
+      <!-- Dynamic Messages -->
+      <div *ngFor="let message of messages"
+           class="message"
+           [ngClass]="{'user-message': message.sender === 'user', 'ai-message': message.sender === 'ai'}">
+        <div class="message-content">
+          <div class="message-header">
+            <ion-icon [name]="message.sender === 'user' ? 'person-circle-outline' : 'sparkles-outline'" 
+                     class="message-icon">
+            </ion-icon>
+            <span>{{ message.sender === 'user' ? 'You' : 'StudyBuddy' }}</span>
+          </div>
+          <p>{{ message.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div class="input-container">
+    <ion-item class="input-wrapper">
+      <ion-textarea
+        [(ngModel)]="inputText"
+        placeholder="Message StudyBuddy..."
+        [rows]="3"
+        [autoGrow]="true"
+        class="message-input"
+        [disabled]="isLoading"
+        (keyup.enter)="sendMessage()"
+      ></ion-textarea>
+      <ion-button 
+        fill="clear" 
+        class="send-button"
+        (click)="sendMessage()"
+        [disabled]="isLoading">
+        <ion-icon name="send" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-item>
+    <div class="input-footer">
+      <p class="disclaimer">StudyBuddy can make mistakes. Consider checking important information.</p>
+    </div>
+  </div>
+  <ion-loading [isOpen]="isLoading" message="Thinking..."></ion-loading>
+</ion-content>
