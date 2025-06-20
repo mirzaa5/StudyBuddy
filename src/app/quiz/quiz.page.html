@@ -68,7 +68,14 @@
             </div>
             <p class="question-text">{{question.question}}</p>
             <div class="options-container">
-              <ion-item class="option-item" *ngFor="let option of question.options; let i = index">
+              <ion-item 
+                class="option-item"
+                *ngFor="let option of question.options; let i = index"
+                [ngClass]="{
+                  'correct': selectedAnswers[question.id] === i && i === question.correctAnswerIndex,
+                  'incorrect': selectedAnswers[question.id] === i && i !== question.correctAnswerIndex
+                }"
+              >
                 <ion-radio 
                   [value]="i" 
                   (ionSelect)="onAnswerSelect(question.id, i)"

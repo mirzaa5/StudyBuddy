@@ -236,6 +236,15 @@
   }
 }
 
+.option-item.correct {
+  --background: #d4edda;
+  border: 1px solid #28a745;
+}
+.option-item.incorrect {
+  --background: #f8d7da;
+  border: 1px solid #dc3545;
+}
+
 // Dark mode adjustments
 :host-context(.dark-theme) {
   .custom-header {

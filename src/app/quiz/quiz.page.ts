@@ -10,12 +10,14 @@ import {
   sparklesOutline 
 } from 'ionicons/icons';
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClient, HttpClientModule, HttpHeaders } from '@angular/common/http';
+import { NotificationService } from '../services/notification/notification.service';
 
 interface QuizQuestion {
   id: number;
   question: string;
   options: string[];
-  correctAnswer: number;
+  correctAnswerIndex: number;
 }
 
 @Component({
@@ -23,7 +25,7 @@ interface QuizQuestion {
   templateUrl: './quiz.page.html',
   styleUrls: ['./quiz.page.scss'],
   standalone: true,
-  imports: [IonicModule, CommonModule, FormsModule],
+  imports: [IonicModule, CommonModule, FormsModule, HttpClientModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class QuizPage {
@@ -34,7 +36,13 @@ export class QuizPage {
   questions: QuizQuestion[] = [];
   selectedAnswers: { [key: number]: number } = {};
 
-  constructor(private toastController: ToastController) {
+  private readonly GENERATE_QUIZ_URL = 'https://us-central1-prompt-backend-2025-v1.cloudfunctions.net/generateQuiz';
+
+  constructor(
+    private toastController: ToastController,
+    private http: HttpClient,
+    private notificationService: NotificationService
+  ) {
     addIcons({ 
       helpCircleOutline, 
       createOutline, 
@@ -50,55 +58,46 @@ export class QuizPage {
 
   async generateQuiz() {
     if (!this.inputText.trim()) {
-      await this.showToast('Please enter a topic or text to generate a quiz', 'warning');
+      await this.notificationService.showToast('Please enter a topic or text to generate a quiz', 'warning');
       return;
     }
 
     this.isLoading = true;
+    this.hasQuestions = false;
+    this.questions = [];
+    this.selectedAnswers = {};
     try {
-      // TODO: Implement actual quiz generation logic here
-      await new Promise(resolve => setTimeout(resolve, 2000)); // Simulated delay
-      
-      // Sample quiz data
-      this.questions = [
-        {
-          id: 1,
-          question: 'What is the capital of France?',
-          options: ['London', 'Paris', 'Berlin', 'Madrid'],
-          correctAnswer: 1
-        },
-        {
-          id: 2,
-          question: 'Which planet is known as the Red Planet?',
-          options: ['Venus', 'Mars', 'Jupiter', 'Saturn'],
-          correctAnswer: 1
-        }
-      ];
-      
-      this.hasQuestions = true;
-      await this.showToast('Quiz generated successfully!', 'success');
-    } catch (error) {
-      await this.showToast('Failed to generate quiz. Please try again.', 'error');
+      const headers = new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      });
+      const response: any = await this.http.post<any>(
+        this.GENERATE_QUIZ_URL,
+        { input: this.inputText },
+        { headers }
+      ).toPromise();
+      if (response && Array.isArray(response.quiz)) {
+        this.questions = response.quiz;
+        this.hasQuestions = true;
+        await this.notificationService.showToast('Quiz generated successfully!', 'success');
+      } else {
+        await this.notificationService.showToast('Quiz response was empty or malformed.', 'error');
+      }
+    } catch (error: any) {
+      await this.notificationService.showToast('Failed to generate quiz. Please try again.', 'error');
     } finally {
       this.isLoading = false;
     }
   }
 
-  onAnswerSelect(questionId: number, answerIndex: number) {
+  async onAnswerSelect(questionId: number, answerIndex: number) {
     this.selectedAnswers[questionId] = answerIndex;
-  }
-
-  private async showToast(message: string, type: 'success' | 'error' | 'warning') {
-    const toast = await this.toastController.create({
-      message,
-      duration: 3000,
-      position: 'bottom',
-      color: type === 'success' ? 'success' : type === 'error' ? 'danger' : 'warning',
-      buttons: [{
-        text: 'Dismiss',
-        role: 'cancel'
-      }]
-    });
-    await toast.present();
+    const question = this.questions.find(q => q.id === questionId);
+    if (!question) return;
+    if (answerIndex === question.correctAnswerIndex) {
+      await this.notificationService.showToast('Correct answer!', 'success');
+    } else {
+      await this.notificationService.showToast('Wrong answer. Try again!', 'error');
+    }
   }
 } 
