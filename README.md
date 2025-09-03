@@ -9,7 +9,8 @@ An Ionic/Angular app that uses OpenAI GPT to help with learning through chat, te
 - **Quiz Generator**: Create multiple-choice quizzes from any topic
 - <img width="328" height="710" alt="image" src="https://github.com/user-attachments/assets/fdee9dda-fbaa-4fc7-b09b-233fb39c379f" />
 - <img width="327" height="705" alt="image" src="https://github.com/user-attachments/assets/ed2f2c7b-79ac-4249-9cbe-87d8a5af3c7a" />
-- <img width="327" height="712" alt="image" src="https://github.com/user-attachments/assets/25892e28-d306-43fa-9a23-dfd81d001ac8" />
+- <img width="322" height="702" alt="image" src="https://github.com/user-attachments/assets/1347f725-fb15-473c-b800-5c1d05e259af" />
+
 
 
 
