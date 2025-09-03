@@ -7,6 +7,8 @@ An Ionic/Angular app that uses OpenAI GPT to help with learning through chat, te
 - **AI Chat**: Ask questions and get intelligent responses
 - **Text Summarizer**: Condense long texts into summaries
 - **Quiz Generator**: Create multiple-choice quizzes from any topic
+- <img width="327" height="710" alt="image" src="https://github.com/user-attachments/assets/7d659e63-9d6f-4834-b118-252a90060004" />
+
 
 ## Prerequisites
 
